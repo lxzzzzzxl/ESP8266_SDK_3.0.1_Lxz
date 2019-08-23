@@ -154,6 +154,8 @@ else
     echo "spi ota map:  256KB + 256KB"
 fi
 
+echo ""
+
 touch user/user_main.c
 
 echo ""

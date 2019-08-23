@@ -22,19 +22,12 @@
  *
  */
 
-#ifndef __USER_CONFIG_H__
-#define __USER_CONFIG_H__
+#ifndef __GPIO16_H__
+#define __GPIO16_H__
+#include "ets_sys.h"
+void gpio16_output_conf(void);
+void gpio16_output_set(uint8_t value);
+void gpio16_input_conf(void);
+uint8_t gpio16_input_get(void);
 
-#define AT_CUSTOM_UPGRADE
-
-#ifdef AT_CUSTOM_UPGRADE
-    #ifndef AT_UPGRADE_SUPPORT
-    #error "upgrade is not supported when eagle.flash.bin+eagle.irom0text.bin!!!"
-    #endif
-#endif
-
-#define CONFIG_AT_SMARTCONFIG_COMMAND_ENABLE
-// #define CONFIG_AT_WPA2_ENTERPRISE_COMMAND_ENABLE
-
-#define CONFIG_ENABLE_IRAM_MEMORY       1
 #endif
