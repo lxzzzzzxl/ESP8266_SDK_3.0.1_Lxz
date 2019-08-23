@@ -1,3 +1,4 @@
+
 /*
  * ESPRESSIF MIT License
  *
@@ -21,20 +22,30 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+#include "ets_sys.h"
+#ifndef __hw_timer_H__
+#define __hw_timer_H__
+//TIMER PREDIVED MODE
+typedef enum {
+    DIVDED_BY_1 = 0,        //timer clock
+    DIVDED_BY_16 = 4,    //divided by 16
+    DIVDED_BY_256 = 8,    //divided by 256
+} time_predived_mode;
 
-#ifndef __USER_CONFIG_H__
-#define __USER_CONFIG_H__
+typedef enum {            //timer interrupt mode
+    TM_LEVEL_INT = 1,    // level interrupt
+    TM_EDGE_INT   = 0,    //edge interrupt
+} time_int_mode;
 
-#define AT_CUSTOM_UPGRADE
+typedef enum {
+    FRC1_SOURCE = 0,
+    NMI_SOURCE = 1,
+} frc1_timer_source_type;
 
-#ifdef AT_CUSTOM_UPGRADE
-    #ifndef AT_UPGRADE_SUPPORT
-    #error "upgrade is not supported when eagle.flash.bin+eagle.irom0text.bin!!!"
-    #endif
-#endif
 
-#define CONFIG_AT_SMARTCONFIG_COMMAND_ENABLE
-// #define CONFIG_AT_WPA2_ENTERPRISE_COMMAND_ENABLE
+void  hw_timer_init(frc1_timer_source_type source_type, uint8_t req);
 
-#define CONFIG_ENABLE_IRAM_MEMORY       1
+void  hw_timer_set_func(void (* user_hw_timer_cb_set)(void)) ;
+void  hw_timer_arm(uint32_t val) ;
+
 #endif

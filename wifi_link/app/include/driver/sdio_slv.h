@@ -22,19 +22,21 @@
  *
  */
 
-#ifndef __USER_CONFIG_H__
-#define __USER_CONFIG_H__
+#ifndef __SDIO_SLAVE_H__
+#define __SDIO_SLAVE_H__
+#include "ets_sys.h"
+#include "c_types.h"
 
-#define AT_CUSTOM_UPGRADE
+#include "user_interface.h"
 
-#ifdef AT_CUSTOM_UPGRADE
-    #ifndef AT_UPGRADE_SUPPORT
-    #error "upgrade is not supported when eagle.flash.bin+eagle.irom0text.bin!!!"
-    #endif
-#endif
+#define RX_AVAILIBLE   2
+#define TX_AVAILIBLE   1
+#define INIT_STAGE     0
 
-#define CONFIG_AT_SMARTCONFIG_COMMAND_ENABLE
-// #define CONFIG_AT_WPA2_ENTERPRISE_COMMAND_ENABLE
+void sdio_slave_init(void);
 
-#define CONFIG_ENABLE_IRAM_MEMORY       1
+int32_t sdio_load_data(const uint8_t *data, uint32_t len);
+typedef void (*sdio_recv_data_callback_t)(uint8_t *data, uint32_t len);
+
+bool sdio_register_recv_cb(sdio_recv_data_callback_t cb);
 #endif

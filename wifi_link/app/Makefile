@@ -22,15 +22,21 @@ GEN_IMAGES= eagle.app.v6.out
 GEN_BINS= eagle.app.v6.bin
 SPECIAL_MKTARGETS=$(APP_MKTARGETS)
 SUBDIRS=    \
-	user    \
-	driver
-
+	user
+ifdef AT_OPEN_SRC
+SUBDIRS +=    \
+	at
+endif
 endif # } PDIR
 
 APPDIR = .
 LDDIR = ../ld
 
 CCFLAGS += -Os
+
+ifdef ESP_AT_FW_VERSION
+CCFLAGS += -DESP_AT_FW_VERSION=\"$(ESP_AT_FW_VERSION)\"
+endif
 
 TARGET_LDFLAGS =		\
 	-nostdlib		\
@@ -47,8 +53,12 @@ ifeq ($(FLAVOR),release)
 endif
 
 COMPONENTS_eagle.app.v6 = \
-	user/libuser.a  \
-	driver/libdriver.a
+	user/libuser.a
+	
+ifdef AT_OPEN_SRC
+COMPONENTS_eagle.app.v6 += \
+	at/libat.a
+endif
 
 LINKFLAGS_eagle.app.v6 = \
 	-L../lib        \
@@ -67,16 +77,24 @@ LINKFLAGS_eagle.app.v6 = \
 	-lnet80211	\
 	-llwip	\
 	-lwpa	\
+	-lwpa2	\
 	-lcrypto	\
 	-lmain	\
 	-ljson	\
-	-lupgrade\
-	-lssl	\
-	-lpwm	\
-	-lsmartconfig \
-	$(DEP_LIBS_eagle.app.v6)					\
-	-Wl,--end-group
+	-lupgrade	\
+	-lmbedtls		\
+	-lwps		\
+	-lsmartconfig	\
+	-lairkiss		\
+	$(DEP_LIBS_eagle.app.v6)					
 
+ifndef AT_OPEN_SRC
+LINKFLAGS_eagle.app.v6 +=    \
+	-lat
+endif
+
+LINKFLAGS_eagle.app.v6 +=    \
+	-Wl,--end-group
 DEPENDS_eagle.app.v6 = \
                 $(LD_FILE) \
                 $(LDDIR)/eagle.rom.addr.v6.ld
@@ -95,7 +113,22 @@ DEPENDS_eagle.app.v6 = \
 #	-DTXRX_TXBUF_DEBUG
 #	-DTXRX_RXBUF_DEBUG
 #	-DWLAN_CONFIG_CCX
-CONFIGURATION_DEFINES =	-DICACHE_FLASH
+CONFIGURATION_DEFINES =	-DICACHE_FLASH -DUSE_OPTIMIZE_PRINTF
+
+ifdef AT_OPEN_SRC
+CONFIGURATION_DEFINES +=    \
+	-DAT_OPEN_SRC
+endif
+
+ifeq ($(APP),0)
+else
+CONFIGURATION_DEFINES +=    \
+	-DAT_UPGRADE_SUPPORT
+endif
+
+ifeq ($(SPI_SIZE_MAP),5)
+CONFIGURATION_DEFINES += -DFLASH_MAP=$(SPI_SIZE_MAP)
+endif
 
 DEFINES +=				\
 	$(UNIVERSAL_TARGET_DEFINES)	\
