@@ -2,6 +2,7 @@
 #include "osapi.h"
 #include "user_interface.h"
 #include "wifi_link.h"
+#include "sntp.h"
 
 
 #if ((SPI_FLASH_SIZE_MAP == 0) || (SPI_FLASH_SIZE_MAP == 1))
@@ -76,4 +77,6 @@ user_init(void)
 	os_printf("ESP8266 SDK By_lxz\r\n");
 	wifi_set_opmode(STATION_MODE);		//设置为STA模式
 	user_set_station_config();			//调用WiFi配置连接函数
+
+	enable_sntp();
 }

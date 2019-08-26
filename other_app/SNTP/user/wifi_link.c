@@ -54,7 +54,6 @@ wifi_event(System_Event_t *event)
 						IP2STR(&event->event_info.got_ip.ip),
 						IP2STR(&event->event_info.got_ip.mask),
 						IP2STR(&event->event_info.got_ip.gw));
-			enable_sntp();
 			enable_time();
 			os_printf("\n");
 			break;
